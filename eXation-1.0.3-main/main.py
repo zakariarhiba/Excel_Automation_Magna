@@ -712,28 +712,46 @@ class Worker_6(QThread):
         try:
             t1 = time.time()
             # output as csv files in out directory
-            Export.to_csv("./out/Export.csv", encoding="utf-8", index="False")
+            Export.to_excel("./out/Export.xlsx", index="False")
             self.progress.emit(90)
-            DiaP.to_csv("./out/DiaP.csv", encoding="utf-8", index="False")
+            DiaP.to_excel("./out/DiaP.xlsx", index="False")
             self.progress.emit(93)
-            DiaE.to_csv("./out/DiaE.csv", encoding="utf-8", index="False")
+            DiaE.to_excel("./out/DiaE.xlsx", index="False")
             self.progress.emit(96)
             t2 = time.time()
-        except:
-            print(
-                "Failed to create output, please check if folder out exist in the same directory, if not create it"
-            )
-            self.notif.emit("Failed to create output, Erorr")
-            self.progress.emit(0)
-            mainwindow.stackedWidget.setCurrentIndex(5)
+        except: 
+            try:
+                t1 = time.time()
+                # output as csv files in out directory
+                Export.to_csv("./out/Export.csv", encoding="utf-8", index="False")
+                self.progress.emit(90)
+                DiaP.to_csv("./out/DiaP.csv", encoding="utf-8", index="False")
+                self.progress.emit(93)
+                DiaE.to_csv("./out/DiaE.csv", encoding="utf-8", index="False")
+                self.progress.emit(96)
+                t2 = time.time()
+            except:
+                print(
+                    "Failed to create output, please check if folder out exist in the same directory, if not create it"
+                )
+                self.notif.emit("Failed to create output, Erorr")
+                self.progress.emit(0)
+                mainwindow.stackedWidget.setCurrentIndex(5)
+            else:
+                print("output created as csv in out directory")
+                print(f"done all in {round(t2-t1,2)} seconds")
+
+                mainwindow.analyics[
+                    "creatOutTime"
+                ] = f"creat output csv in {round(t2-t1,2)} seconds"
         else:
-            print("output created as csv in out directory")
+            print("output created as Excel in out directory")
             print(f"done all in {round(t2-t1,2)} seconds")
 
             mainwindow.analyics[
                 "creatOutTime"
-            ] = f"creat output csv in {round(t2-t1,2)} seconds"
-
+            ] = f"creat output excel in {round(t2-t1,2)} seconds"
+            
         toc = time.time()
         print(f"time to finish all {toc-tic} seconds")
 
